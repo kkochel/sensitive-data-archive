@@ -191,7 +191,7 @@
             "destination_type": "queue",
             "arguments": {},
             "destination": "accession",
-            "routing_key": "accession"
+            "routing_key": "accessionIDs"
         },
         {
             "source": "sda",
