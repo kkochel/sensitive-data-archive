@@ -1,6 +1,6 @@
 
 image:
-  repository: ghcr.io/neicnordic/sda-orch
+  repository: ghcr.io/kkochel/sda-orch
   tag: v0.10.2
   pullPolicy: Always
 logLevel: "info"

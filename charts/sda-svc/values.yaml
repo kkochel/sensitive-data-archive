@@ -1,7 +1,7 @@
 # Default values for SDA services.
 # Declare variables to be passed into your templates.
 image:
-  repository: "ghcr.io/neicnordic/sensitive-data-archive"
+  repository: "ghcr.io/kkochel/sensitive-data-archive"
   tag: "v0.0.90"
   pullPolicy: "Always"
 
@@ -356,7 +356,7 @@ backup:
 
 doa:
   name: doa
-  repository: ghcr.io/neicnordic/sda-doa
+  repository: ghcr.io/kkochel/sda-doa
   imageTag: v1.6.62
   imagePullPolicy: IfNotPresent
   replicaCount: 2
@@ -512,7 +512,7 @@ releasetest:
 
 verify:
   replicaCount: 1
-  repository: ghcr.io/neicnordic/sda-pipeline
+  repository: ghcr.io/kkochel/sda-pipeline
   imageTag: v0.4.27
   imagePullPolicy: IfNotPresent
   resources:

@@ -25,7 +25,7 @@ externalPkiService:
 extraSecurityContext: {}
 
 image:
-  repository: ghcr.io/neicnordic/sensitive-data-archive
+  repository: ghcr.io/kkochel/sensitive-data-archive
   tag: v0.0.90-postgres
   pullPolicy: IfNotPresent
 
