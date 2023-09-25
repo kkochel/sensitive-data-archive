@@ -27,6 +27,7 @@ if [ -e "${RABBITMQ_SERVER_CERT}" ] && [ -e "${RABBITMQ_SERVER_KEY}" ]; then
 		ssl_options.keyfile = ${RABBITMQ_SERVER_KEY}
 		ssl_options.versions.1 = tlsv1.2
 		disk_free_limit.absolute = 1GB
+		management.tcp.port = 15672
 		management.ssl.port = 15671
 		management.ssl.certfile = ${RABBITMQ_SERVER_CERT}
 		management.ssl.keyfile = ${RABBITMQ_SERVER_KEY}
