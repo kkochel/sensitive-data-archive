@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Build containers
-docker build -t neicnordic/sda-pipeline:latest . || exit 1
+docker build -t kkochel/sda-pipeline:latest . || exit 1
 
 cd dev_utils || exit 1
 
