@@ -191,6 +191,7 @@ func ifCorrelationIdEmptySetNillUuid(delivered amqp.Delivery) string {
 	if corrId == "" {
 		corrId = uuid.Nil.String()
 	}
+
 	return corrId
 }
 
