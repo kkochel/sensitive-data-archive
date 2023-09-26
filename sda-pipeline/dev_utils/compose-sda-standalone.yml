@@ -35,7 +35,7 @@ services:
       interval: 5s
       timeout: 20s
       retries: 3
-    image: ghcr.io/neicnordic/sda-db:v2.1.14
+    image: ghcr.io/kkochel/sensitive-data-archive:v0.0.2-rabbitmq
     ports:
       - "5432:5432"
     volumes:
@@ -43,8 +43,8 @@ services:
       - certs:/var/lib/postgresql/tls/
   mq:
     container_name: mq
-    image: ghcr.io/neicnordic/sda-mq:v1.4.25
-    # image: neicnordic/sda-mq:latest
+    image: ghcr.io/kkochel/sda-mq:v0.0.2
+    # image: kkochel/sda-mq:latest
     environment:
       - MQ_SERVER_CERT=/etc/rabbitmq/ssl/mq.pem
       - MQ_SERVER_KEY=/etc/rabbitmq/ssl/mq.key
@@ -120,7 +120,7 @@ services:
       db:
         condition: service_healthy
     env_file: ./env.ingest
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     build:
       context: ..
     volumes:
@@ -142,7 +142,7 @@ services:
       db:
         condition: service_healthy
     env_file: ./env.verify
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     build:
       context: ..
     volumes:
@@ -166,7 +166,7 @@ services:
     env_file: ./env.finalize
     environment:
       - SCHEMA_TYPE="standalone"
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     build:
       context: ..
     volumes:
@@ -190,7 +190,7 @@ services:
     env_file: ./env.backup
     environment:
       - SCHEMA_TYPE="standalone"
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     build:
       context: ..
     volumes:
@@ -215,7 +215,7 @@ services:
     env_file: ./env.mapper
     environment:
       - SCHEMA_TYPE="standalone"
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     build:
       context: ..
     volumes:
@@ -235,7 +235,7 @@ services:
       db:
         condition: service_healthy
     env_file: ./env.api
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     build:
       context: ..
     ports:
@@ -249,7 +249,7 @@ services:
     command: sda-orchestrate
     container_name: orchestrate
     env_file: ./env.orchestrate
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     build:
       context: ..
     environment:

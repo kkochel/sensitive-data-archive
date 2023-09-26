@@ -146,7 +146,7 @@ jobs:
       - name: Build image
         run: |
           cd sda-sftp-inbox
-          docker build -t neicnordic/sda-inbox-sftp:latest .
+          docker build -t kkochel/sda-inbox-sftp:latest .
 
       - name: Start Services
         run: |
