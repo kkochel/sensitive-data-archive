@@ -12,13 +12,13 @@ services:
       interval: 5s
       timeout: 20s
       retries: 3
-    image: ghcr.io/kkochel/sda-db:v0.0.1
+    image: ghcr.io/kkochel/sensitive-data-archive:v0.0.2-postgres
     ports:
       - "5432:5432"
     volumes:
       - /tmp/data:/data
   mq:
-    image: ghcr.io/kkochel/sda-mq:v0.0.1
+    image: ghcr.io/kkochel/sensitive-data-archive:v0.0.2-rabbitmq
     container_name: mq
     environment:
       - MQ_USER=test
