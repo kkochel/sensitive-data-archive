@@ -36,7 +36,7 @@ services:
       interval: 5s
       timeout: 20s
       retries: 3
-    image: ghcr.io/neicnordic/sda-db:v2.1.14
+    image: ghcr.io/kkochel/sda-db:v0.0.2
     ports:
       - "5432:5432"
     volumes:
@@ -48,7 +48,7 @@ services:
     depends_on:
       certfixer:
         condition: service_completed_successfully
-    image: ghcr.io/neicnordic/sda-mq:v1.4.30
+    image: ghcr.io/kkochel/sda-mq:v0.0.2
     environment:
       - MQ_SERVER_CERT=/etc/rabbitmq/ssl/mq.pem
       - MQ_SERVER_KEY=/etc/rabbitmq/ssl/mq.key
@@ -132,7 +132,7 @@ services:
       mq:
         condition: service_healthy
     env_file: ./env.ingest
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     volumes:
       - ./config.yaml:/config.yaml
       - ./:/dev_utils/
@@ -153,7 +153,7 @@ services:
       mq:
         condition: service_healthy
     env_file: ./env.verify
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     volumes:
       - ./config.yaml:/config.yaml
       - ./:/dev_utils/
@@ -174,7 +174,7 @@ services:
       mq:
         condition: service_healthy
     env_file: ./env.finalize
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     volumes:
       - ./config.yaml:/config.yaml
       - ./:/dev_utils/
@@ -193,7 +193,7 @@ services:
       mq:
         condition: service_healthy
     env_file: ./env.backup
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     volumes:
       - ./config.yaml:/config.yaml
       - ./:/dev_utils/
@@ -215,7 +215,7 @@ services:
       mq:
         condition: service_healthy
     env_file: ./env.mapper
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     volumes:
       - ./config.yaml:/config.yaml
       - ./:/dev_utils/
@@ -231,7 +231,7 @@ services:
       - certfixer
       - mq
     env_file: ./env.intercept
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     volumes:
       - ./config.yaml:/config.yaml
       - ./:/dev_utils/
@@ -250,7 +250,7 @@ services:
       mq:
         condition: service_healthy
     env_file: ./env.api
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     ports:
       - "8080:8080"
     restart: always

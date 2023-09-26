@@ -12,13 +12,13 @@ services:
       interval: 5s
       timeout: 20s
       retries: 3
-    image: ghcr.io/neicnordic/sda-db:v2.1.14
+    image: ghcr.io/kkochel/sda-db:v0.0.1
     ports:
       - "5432:5432"
     volumes:
       - /tmp/data:/data
   mq:
-    image: ghcr.io/neicnordic/sda-mq:v1.4.30
+    image: ghcr.io/kkochel/sda-mq:v0.0.1
     container_name: mq
     environment:
       - MQ_USER=test
@@ -88,7 +88,7 @@ services:
       - DB_HOST=db
       - INBOX_TYPE=s3
       - INBOX_URL=http://s3
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     volumes:
       - ./config-notls.yaml:/config.yaml
       - ./:/dev_utils/
@@ -113,7 +113,7 @@ services:
       - DB_HOST=db
       - INBOX_TYPE=s3
       - INBOX_URL=http://s3
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     volumes:
       - ./config-notls.yaml:/config.yaml
       - ./:/dev_utils/
@@ -134,7 +134,7 @@ services:
       - BROKER_ROUTINGKEY=backup
       - BROKER_ROUTINGERROR=error
       - DB_HOST=db
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     volumes:
       - ./config-notls.yaml:/config.yaml
       - ./:/dev_utils/
@@ -159,7 +159,7 @@ services:
       - BROKER_ROUTINGKEY=completed
       - BROKER_ROUTINGERROR=error
       - DB_HOST=db
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     volumes:
       - ./config-notls.yaml:/config.yaml
       - ./:/dev_utils/
@@ -182,7 +182,7 @@ services:
       - DB_HOST=db
       - DB_USER=lega_out
       - DB_PASSWORD=lega_out
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     volumes:
       - ./config-notls.yaml:/config.yaml
       - ./:/dev_utils/
@@ -198,7 +198,7 @@ services:
       - BROKER_QUEUE=files
       - BROKER_ROUTINGKEY=ingest
       - BROKER_ROUTINGERROR=error
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     volumes:
       - ./config-notls.yaml:/config.yaml
       - ./:/dev_utils/
@@ -217,7 +217,7 @@ services:
       - BROKER_ROUTINGKEY=ingest
       - BROKER_ROUTINGERROR=error
       - DB_HOST=db
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     ports:
       - "8080:8080"
     restart: always
