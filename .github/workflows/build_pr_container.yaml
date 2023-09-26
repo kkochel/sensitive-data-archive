@@ -112,6 +112,19 @@ jobs:
             org.opencontainers.image.created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
             org.opencontainers.image.revision=${{ github.sha }}
 
+      - name: Build container for FEGA outbox database
+        uses: docker/build-push-action@v5
+        with:
+          context: ./fo-db
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:sha-${{ github.sha }}-fo-db
+            ghcr.io/${{ github.repository }}:PR${{ github.event.number }}-fo-db
+          labels: |
+            org.opencontainers.image.source=${{ github.event.repository.clone_url }}
+            org.opencontainers.image.created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+            org.opencontainers.image.revision=${{ github.sha }}
+
       - name: Build container for rabbitmq
         uses: docker/build-push-action@v5
         with:

@@ -1,0 +1,8 @@
+apiVersion: v2
+name: fo-db
+version: "0.0.1"
+description: Database component for FEGA outbox (FO) installation
+#home: https://neic-sda.readthedocs.io
+#icon: https://neic.no/assets/images/logo.png
+sources:
+- https://github.com/kkochel/sensitive-data-archive
