@@ -432,8 +432,8 @@ func (dbs *SQLdb) updateDatasetEvent(datasetID, status, correlationID, user stri
 		return err
 	}
 
-	const markDataset = "INSERT INTO sda.dataset_event_log(dataset_id, event, message) VALUES($1, $2, $3);"
-	result, err := db.Exec(markDataset, datasetInternalID, status, "")
+	const markDataset = "INSERT INTO sda.dataset_event_log(dataset_id, event) VALUES($1, $2);"
+	result, err := db.Exec(markDataset, datasetInternalID, status)
 	if err != nil {
 		return err
 	}
