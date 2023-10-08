@@ -425,15 +425,24 @@ func (dbs *SQLdb) updateDatasetEvent(datasetID, status, correlationID, user stri
 	db := dbs.DB
 	const dataset = "SELECT id FROM sda.datasets WHERE stable_id = $1;"
 	const markFile = "INSERT INTO sda.file_event_log(file_id, event, correlation_id, user_id) " +
-		"SELECT file_id, $2, $3, $4 from sda.file_dataset " +
-		"WHERE dataset_id = $1;"
+		"SELECT file_id, $2, $3, $4 from sda.file_dataset WHERE dataset_id = $1;"
 
 	var datasetInternalID int
 	if err := db.QueryRow(dataset, datasetID).Scan(&datasetInternalID); err != nil {
 		return err
 	}
 
-	result, err := db.Exec(markFile, datasetInternalID, status, correlationID, user)
+	const markDataset = "INSERT INTO sda.dataset_event_log(dataset_id, event, message) VALUES($1, $2, $3);"
+	result, err := db.Exec(markDataset, datasetInternalID, status, "")
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected, _ := result.RowsAffected(); rowsAffected == 0 {
+		return errors.New("something went wrong with the query zero rows were changed")
+	}
+
+	result, err = db.Exec(markFile, datasetInternalID, mapDatasetStatusForFileStatus(status), correlationID, user)
 	if err != nil {
 		return err
 	}
@@ -444,6 +453,18 @@ func (dbs *SQLdb) updateDatasetEvent(datasetID, status, correlationID, user stri
 
 	return nil
 
+}
+
+func mapDatasetStatusForFileStatus(status string) string {
+	var fileStatus string
+	switch status {
+	case "release":
+		fileStatus = "ready"
+	case "deprecate":
+		fileStatus = "disabled"
+	}
+
+	return fileStatus
 }
 
 // SetAccessionID adds a stable id to a file
