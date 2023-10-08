@@ -155,6 +155,13 @@
             "durable": true,
             "auto_delete": false,
             "arguments": {}
+        },
+        {
+            "name": "unknown_schema",
+            "vhost": "sda",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
         }
     ],
     "exchanges": [
@@ -264,6 +271,14 @@
             "arguments": {},
             "destination": "catch_all.dead",
             "routing_key": "#"
+        },
+        {
+            "source": "sda",
+            "vhost": "sda",
+            "destination_type": "queue",
+            "arguments": {},
+            "destination": "unknown_schema",
+            "routing_key": "unknown_schema"
         }
     ]
 }
