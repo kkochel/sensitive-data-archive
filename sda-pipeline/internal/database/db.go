@@ -442,7 +442,7 @@ func (dbs *SQLdb) updateDatasetEvent(datasetID, status, correlationID, user stri
 		return errors.New("something went wrong with the query zero rows were changed")
 	}
 
-	result, err = db.Exec(markFile, datasetInternalID, mapDatasetStatusForFileStatus(status), correlationID, user)
+	result, err = db.Exec(markFile, datasetInternalID, "ready", correlationID, user)
 	if err != nil {
 		return err
 	}
@@ -453,18 +453,6 @@ func (dbs *SQLdb) updateDatasetEvent(datasetID, status, correlationID, user stri
 
 	return nil
 
-}
-
-func mapDatasetStatusForFileStatus(status string) string {
-	var fileStatus string
-	switch status {
-	case "release":
-		fileStatus = "ready"
-	case "deprecate":
-		fileStatus = "disabled"
-	}
-
-	return fileStatus
 }
 
 // SetAccessionID adds a stable id to a file
