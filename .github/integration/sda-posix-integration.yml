@@ -79,7 +79,7 @@ services:
       interval: 5s
       timeout: 20s
       retries: 3
-    image: ghcr.io/neicnordic/sensitive-data-archive:PR${PR_NUMBER}-postgres
+    image: ghcr.io/kkochel/sensitive-data-archive:PR${PR_NUMBER}-postgres
     ports:
       - "15432:5432"
     restart: always
@@ -110,7 +110,7 @@ services:
       interval: 5s
       timeout: 20s
       retries: 3
-    image: ghcr.io/neicnordic/sensitive-data-archive:PR${PR_NUMBER}-rabbitmq
+    image: ghcr.io/kkochel/sensitive-data-archive:PR${PR_NUMBER}-rabbitmq
     ports:
       - "25671:15671"
     restart: always
@@ -121,7 +121,7 @@ services:
   inbox:
     build:
       context: ../../sda-sftp-inbox
-    image: ghcr.io/neicnordic/sensitive-data-archive:PR${PR_NUMBER}-sftp-inbox
+    image: ghcr.io/kkochel/sensitive-data-archive:PR${PR_NUMBER}-sftp-inbox
     container_name: inbox
     depends_on:
       certfixer:
