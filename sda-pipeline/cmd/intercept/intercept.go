@@ -100,6 +100,10 @@ func main() {
 						delivered.CorrelationId, e)
 				}
 
+				if err := delivered.Ack(false); err != nil {
+					log.Errorf("Failed to ack message for reason: %v", err)
+				}
+
 				// Restart on new message
 				continue
 			}
