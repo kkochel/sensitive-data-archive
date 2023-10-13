@@ -110,7 +110,7 @@ services:
       - "18001:8001"
 
   ingest:
-    image: ghcr.io/neicnordic/sensitive-data-archive:PR${PR_NUMBER}
+    image: ghcr.io/kkochel/sensitive-data-archive:PR${PR_NUMBER}
     command: [ sda-ingest ]
     container_name: ingest
     depends_on:
@@ -135,7 +135,7 @@ services:
       - shared:/shared
 
   verify:
-    image: ghcr.io/neicnordic/sensitive-data-archive:PR${PR_NUMBER}
+    image: ghcr.io/kkochel/sensitive-data-archive:PR${PR_NUMBER}
     command: [ sda-verify ]
     container_name: verify
     depends_on:
