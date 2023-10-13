@@ -162,6 +162,20 @@
             "durable": true,
             "auto_delete": false,
             "arguments": {}
+        },
+        {
+            "name": "foam_dataset",
+            "vhost": "sda",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        },
+        {
+            "name": "outbox_export",
+            "vhost": "sda",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
         }
     ],
     "exchanges": [
@@ -279,6 +293,22 @@
             "arguments": {},
             "destination": "unknown_schema",
             "routing_key": "unknown_schema"
+        },
+        {
+            "source": "sda",
+            "vhost": "sda",
+            "destination_type": "queue",
+            "arguments": {},
+            "destination": "foam_dataset",
+            "routing_key": "foam_dataset"
+        },
+        {
+            "source": "sda",
+            "vhost": "sda",
+            "destination_type": "queue",
+            "arguments": {},
+            "destination": "outbox_export",
+            "routing_key": "outbox_export"
         }
     ]
 }
