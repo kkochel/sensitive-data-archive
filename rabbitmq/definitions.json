@@ -164,6 +164,13 @@
             "arguments": {}
         },
         {
+            "name": "foam_integration",
+            "vhost": "sda",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        },
+        {
             "name": "foam_dataset",
             "vhost": "sda",
             "durable": true,
@@ -293,6 +300,14 @@
             "arguments": {},
             "destination": "unknown_schema",
             "routing_key": "unknown_schema"
+        },
+        {
+            "source": "sda",
+            "vhost": "sda",
+            "destination_type": "queue",
+            "arguments": {},
+            "destination": "foam_integration",
+            "routing_key": "foam_integration"
         },
         {
             "source": "sda",

@@ -165,8 +165,8 @@ func main() {
 					continue
 				}
 
-				log.Debug("Forward message to \"foam_dataset\"")
-				if err := mq.SendMessage(delivered.CorrelationId, conf.Broker.Exchange, "foam_dataset", conf.Broker.Durable, delivered.Body); err != nil {
+				log.Debug("Forward message to \"foam_integration\"")
+				if err := mq.SendMessage(delivered.CorrelationId, conf.Broker.Exchange, "foam_integration", conf.Broker.Durable, delivered.Body); err != nil {
 					// TODO fix resend mechanism
 					log.Errorln("We need to fix this resend stuff ...")
 				}
