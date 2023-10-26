@@ -5,8 +5,7 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"github.com/google/uuid"
-	amqp "github.com/rabbitmq/amqp091-go"
+
 	"sda-pipeline/internal/broker"
 	"sda-pipeline/internal/config"
 	"sda-pipeline/internal/database"
@@ -154,12 +153,59 @@ func main() {
 						log.Errorf("Remove file from inbox failed, reason: %v", err)
 					}
 				}
+
+				if err := db.UpdateDatasetEvent(mappings.DatasetID, "registered", string(delivered.Body)); err != nil {
+					log.Errorf("UpdateDatasetEvent failed  "+
+						"(corr-id: %s, "+
+						"datasetid: %s, "+
+						"accessionids: %v, "+
+						"error: %v)",
+						delivered.CorrelationId,
+						mappings.DatasetID,
+						mappings.AccessionIDs,
+						err)
+
+					// Nack message so the server gets notified that something is wrong and requeue the message
+					if e := delivered.Nack(false, true); e != nil {
+						log.Errorf("Failed to nack message on marking ready the files in the dataset) "+
+							"(corr-id: %s, "+
+							"datasetid: %s, "+
+							"accessionid: %s, "+
+							"reason: %v)",
+							delivered.CorrelationId,
+							mappings.DatasetID,
+							mappings.AccessionIDs,
+							e)
+					}
+
+					continue
+				}
 			case "release":
-				log.Debug("Release type operation, marking dataset as released")
-				if err := db.UpdateDatasetEvent(mappings.DatasetID, "released", ifCorrelationIdEmptySetNillUuid(delivered), "mapper"); err != nil {
-					log.Errorf("failed to set dataset status for dataset: %v", mappings.DatasetID)
-					if err = delivered.Nack(false, false); err != nil {
-						log.Errorf("Failed to Nack message, reason: (%v)", err.Error())
+
+				log.Debug("Release type operation, marking files as ready")
+
+				if err := db.UpdateDatasetEvent(mappings.DatasetID, "released", string(delivered.Body)); err != nil {
+					log.Errorf("UpdateDatasetEvent failed  "+
+						"(corr-id: %s, "+
+						"datasetid: %s, "+
+						"accessionids: %v, "+
+						"error: %v)",
+						delivered.CorrelationId,
+						mappings.DatasetID,
+						mappings.AccessionIDs,
+						err)
+
+					// Nack message so the server gets notified that something is wrong and requeue the message
+					if e := delivered.Nack(false, true); e != nil {
+						log.Errorf("Failed to nack message on marking ready the files in the dataset) "+
+							"(corr-id: %s, "+
+							"datasetid: %s, "+
+							"accessionid: %s, "+
+							"reason: %v)",
+							delivered.CorrelationId,
+							mappings.DatasetID,
+							mappings.AccessionIDs,
+							e)
 					}
 
 					continue
@@ -171,11 +217,32 @@ func main() {
 					log.Errorln("We need to fix this resend stuff ...")
 				}
 			case "deprecate":
-				log.Debug("Deprecate type operation, marking dataset as deprecated")
-				if err := db.UpdateDatasetEvent(mappings.DatasetID, "deprecated", ifCorrelationIdEmptySetNillUuid(delivered), "mapper"); err != nil {
-					log.Errorf("failed to set dataset status for dataset: %v", mappings.DatasetID)
-					if err = delivered.Nack(false, false); err != nil {
-						log.Errorf("Failed to Nack message, reason: (%v)", err.Error())
+
+				log.Debug("Deprecate type operation, marking files as disabled")
+
+				// in the database this will translate to disabling of a file
+				if err := db.UpdateDatasetEvent(mappings.DatasetID, "deprecated", string(delivered.Body)); err != nil {
+					log.Errorf("UpdateDatasetEvent failed  "+
+						"(corr-id: %s, "+
+						"datasetid: %s, "+
+						"accessionids: %v, "+
+						"error: %v)",
+						delivered.CorrelationId,
+						mappings.DatasetID,
+						mappings.AccessionIDs,
+						err)
+
+					// Nack message so the server gets notified that something is wrong and requeue the message
+					if e := delivered.Nack(false, true); e != nil {
+						log.Errorf("Failed to nack message on marking ready the files in the dataset) "+
+							"(corr-id: %s, "+
+							"datasetid: %s, "+
+							"accessionid: %s, "+
+							"reason: %v)",
+							delivered.CorrelationId,
+							mappings.DatasetID,
+							mappings.AccessionIDs,
+							e)
 					}
 
 					continue
@@ -183,21 +250,20 @@ func main() {
 			}
 
 			if err := delivered.Ack(false); err != nil {
-				log.Errorf("failed to Ack message, reason: (%v)", err)
+				log.Errorf("Failed to ack message for work "+
+					"(corr-id: %s, "+
+					"datasetid: %s, "+
+					"accessionids: %v, "+
+					"error: %v)",
+					delivered.CorrelationId,
+					mappings.DatasetID,
+					mappings.AccessionIDs,
+					err)
 			}
 		}
 	}()
 
 	<-forever
-}
-
-func ifCorrelationIdEmptySetNillUuid(delivered amqp.Delivery) string {
-	corrId := delivered.CorrelationId
-	if corrId == "" {
-		corrId = uuid.Nil.String()
-	}
-
-	return corrId
 }
 
 // schemaFromDatasetOperation returns the operation done with dataset
