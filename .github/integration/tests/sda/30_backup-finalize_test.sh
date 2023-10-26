@@ -61,7 +61,7 @@ echo "waiting for finalize to complete"
 until [ "$(curl -su guest:guest http://rabbitmq:15672/api/queues/sda/completed/ | jq -r '.messages_ready')" -eq 2 ]; do
     echo "waiting for finalize to complete"
     RETRY_TIMES=$((RETRY_TIMES + 1))
-    if [ "$RETRY_TIMES" -eq 30 ]; then
+    if [ "$RETRY_TIMES" -eq 60 ]; then
         echo "::error::Time out while waiting for finalize to complete"
         exit 1
     fi

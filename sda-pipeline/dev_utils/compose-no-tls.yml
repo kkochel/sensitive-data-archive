@@ -176,7 +176,7 @@ services:
       - BROKER_QUEUE=mappings
       - BROKER_ROUTINGERROR=error
       - DB_HOST=db
-    image: neicnordic/sda-pipeline:latest
+    image: kkochel/sda-pipeline:latest
     volumes:
       - ./config-notls.yaml:/config.yaml
       - ./:/dev_utils/
