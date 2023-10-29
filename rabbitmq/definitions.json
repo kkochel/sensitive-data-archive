@@ -183,6 +183,13 @@
             "durable": true,
             "auto_delete": false,
             "arguments": {}
+        },
+        {
+            "name": "export_stage_log",
+            "vhost": "sda",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
         }
     ],
     "exchanges": [
@@ -324,6 +331,14 @@
             "arguments": {},
             "destination": "outbox_export",
             "routing_key": "outbox_export"
+        },
+        {
+            "source": "sda",
+            "vhost": "sda",
+            "destination_type": "queue",
+            "arguments": {},
+            "destination": "export_stage_log",
+            "routing_key": "export_stage_log"
         }
     ]
 }
