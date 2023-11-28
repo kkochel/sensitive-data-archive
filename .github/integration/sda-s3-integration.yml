@@ -160,7 +160,7 @@ services:
       - shared:/shared
 
   finalize:
-    image: ghcr.io/neicnordic/sensitive-data-archive:PR${PR_NUMBER}
+    image: ghcr.io/kkochel/sensitive-data-archive:PR${PR_NUMBER}
     command: [ sda-finalize ]
     container_name: finalize
     depends_on:
@@ -185,7 +185,7 @@ services:
       - shared:/shared
 
   mapper:
-    image: ghcr.io/neicnordic/sensitive-data-archive:PR${PR_NUMBER}
+    image: ghcr.io/kkochel/sensitive-data-archive:PR${PR_NUMBER}
     command: [ sda-mapper ]
     container_name: mapper
     depends_on:
@@ -209,7 +209,7 @@ services:
       - shared:/shared
 
   sync:
-    image: ghcr.io/neicnordic/sensitive-data-archive:PR${PR_NUMBER}
+    image: ghcr.io/kkochel/sensitive-data-archive:PR${PR_NUMBER}
     command: [ sda-sync ]
     container_name: sync
     depends_on:
@@ -233,7 +233,7 @@ services:
       - shared:/shared
 
   sync-api:
-    image: ghcr.io/neicnordic/sensitive-data-archive:PR${PR_NUMBER}
+    image: ghcr.io/kkochel/sensitive-data-archive:PR${PR_NUMBER}
     command: [ sda-syncapi ]
     container_name: sync-api
     depends_on:
