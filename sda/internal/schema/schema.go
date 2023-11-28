@@ -36,8 +36,12 @@ func ValidateJSON(reference string, body []byte) error {
 
 func getStructName(path string) interface{} {
 	switch strings.TrimSuffix(filepath.Base(path), filepath.Ext(path)) {
+	case "dataset-deprecate":
+		return new(DatasetDeprecate)
 	case "dataset-mapping":
 		return new(DatasetMapping)
+	case "dataset-release":
+		return new(DatasetRelease)
 	case "inbox-remove":
 		return new(InboxRemove)
 	case "inbox-rename":
@@ -58,6 +62,10 @@ func getStructName(path string) interface{} {
 		return new(IngestionUserError)
 	case "ingestion-verification":
 		return new(IngestionVerification)
+	case "file-sync":
+		return new(SyncDataset)
+	case "metadata-sync":
+		return new(SyncMetadata)
 	default:
 		return ""
 	}
@@ -68,10 +76,20 @@ type Checksums struct {
 	Value string `json:"value"`
 }
 
+type DatasetDeprecate struct {
+	Type      string `json:"type"`
+	DatasetID string `json:"dataset_id"`
+}
+
 type DatasetMapping struct {
 	Type         string   `json:"type"`
 	DatasetID    string   `json:"dataset_id"`
 	AccessionIDs []string `json:"accession_ids"`
+}
+
+type DatasetRelease struct {
+	Type      string `json:"type"`
+	DatasetID string `json:"dataset_id"`
 }
 
 type InfoError struct {
@@ -121,10 +139,9 @@ type IngestionCompletion struct {
 }
 
 type IngestionTrigger struct {
-	Type               string      `json:"type"`
-	User               string      `json:"user"`
-	FilePath           string      `json:"filepath"`
-	EncryptedChecksums []Checksums `json:"encrypted_checksums"`
+	Type     string `json:"type"`
+	User     string `json:"user"`
+	FilePath string `json:"filepath"`
 }
 
 type IngestionUserError struct {
@@ -140,4 +157,25 @@ type IngestionVerification struct {
 	ArchivePath        string      `json:"archive_path"`
 	EncryptedChecksums []Checksums `json:"encrypted_checksums"`
 	ReVerify           bool        `json:"re_verify"`
+}
+
+type SyncDataset struct {
+	DatasetID    string         `json:"dataset_id"`
+	DatasetFiles []DatasetFiles `json:"dataset_files"`
+	User         string         `json:"user"`
+}
+
+type DatasetFiles struct {
+	FilePath string `json:"filepath"`
+	FileID   string `json:"file_id"`
+	ShaSum   string `json:"sha256"`
+}
+
+type SyncMetadata struct {
+	DatasetID string      `json:"dataset_id"`
+	Metadata  interface{} `json:"metadata"`
+}
+
+type Metadata struct {
+	Metadata interface{}
 }

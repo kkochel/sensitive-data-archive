@@ -5,7 +5,6 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"hash"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -36,11 +35,17 @@ type SDAdb struct {
 
 // FileInfo is used by ingest for file metadata (path, size, checksum)
 type FileInfo struct {
-	Checksum          hash.Hash
+	Checksum          string
 	Size              int64
 	Path              string
-	DecryptedChecksum hash.Hash
+	DecryptedChecksum string
 	DecryptedSize     int64
+}
+
+type SyncData struct {
+	User     string
+	FilePath string
+	Checksum string
 }
 
 // SchemaName is the name of the remote database schema to query
@@ -64,12 +69,6 @@ var SlowConnectRate = 1 * time.Minute
 
 // dbRetryTimes is the number of times to retry the same function if it fails
 var RetryTimes = 5
-
-// hashType returns the identification string for the hash type
-func hashType(_ hash.Hash) string {
-	// TODO: Support/check type
-	return "SHA256"
-}
 
 // NewSDAdb creates a new DB connection from the given DBConf variables.
 // Currently, only postgresql connections are supported.

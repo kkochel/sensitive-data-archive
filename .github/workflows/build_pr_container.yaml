@@ -5,7 +5,10 @@ on:
     paths-ignore:
       - ".github/workflows/**"
       - ".gitignore"
-      - "**/README.md"
+      - "**/*.md"
+      - ".github/dependabot.yaml"
+      - "charts/**"
+      - "Makefile"
 
 env:
   PR_NUMBER: ${{ github.event.number }}
@@ -50,19 +53,6 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}:sha-${{ github.sha }}-download
             ghcr.io/${{ github.repository }}:PR${{ github.event.number }}-download
-          labels: |
-            org.opencontainers.image.source=${{ github.event.repository.clone_url }}
-            org.opencontainers.image.created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-            org.opencontainers.image.revision=${{ github.sha }}
-
-      - name: Build container for sda-pipeline
-        uses: docker/build-push-action@v5
-        with:
-          context: ./sda-pipeline
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository }}:sha-${{ github.sha }}-pipeline
-            ghcr.io/${{ github.repository }}:PR${{ github.event.number }}-pipeline
           labels: |
             org.opencontainers.image.source=${{ github.event.repository.clone_url }}
             org.opencontainers.image.created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
@@ -126,7 +116,7 @@ jobs:
             org.opencontainers.image.revision=${{ github.sha }}
 
       - name: Run Trivy vulnerability scanner on postgres
-        uses: aquasecurity/trivy-action@0.12.0
+        uses: aquasecurity/trivy-action@0.14.0
         with:
           image-ref: ghcr.io/${{ github.repository }}:sha-${{ github.sha }}-postgres
           format: "sarif"
@@ -141,7 +131,7 @@ jobs:
           category: postgres
 
       - name: Run Trivy vulnerability scanner on rabbitmq
-        uses: aquasecurity/trivy-action@0.12.0
+        uses: aquasecurity/trivy-action@0.14.0
         with:
           image-ref: ghcr.io/${{ github.repository }}:sha-${{ github.sha }}-rabbitmq
           format: "sarif"
@@ -187,7 +177,7 @@ jobs:
             org.opencontainers.image.revision=${{ github.sha }}
 
       - name: Run Trivy vulnerability scanner on sftp-inbox
-        uses: aquasecurity/trivy-action@0.12.0
+        uses: aquasecurity/trivy-action@0.14.0
         with:
           image-ref: ghcr.io/${{ github.repository }}:sha-${{ github.sha }}-sftp-inbox
           format: "sarif"

@@ -81,8 +81,12 @@ func (auth AuthHandler) getMain(ctx iris.Context) {
 // getLoginOptions returns the available login providers as JSON
 func (auth AuthHandler) getLoginOptions(ctx iris.Context) {
 
-	// Elixir is always available
-	response := []LoginOption{{Name: "Elixir", URL: "/elixir"}}
+	var response []LoginOption
+	// Only add the Elixir option if it has both id and secret
+	if auth.Config.Elixir.ID != "" && auth.Config.Elixir.Secret != "" {
+		response = append(response, LoginOption{Name: "Elixir", URL: "/elixir"})
+	}
+
 	// Only add the CEGA option if it has both id and secret
 	if auth.Config.Cega.ID != "" && auth.Config.Cega.Secret != "" {
 		response = append(response, LoginOption{Name: "EGA", URL: "/ega/login"})
@@ -150,11 +154,14 @@ func (auth AuthHandler) postEGA(ctx iris.Context) {
 			}
 
 			s3conf := getS3ConfigMap(token, auth.Config.S3Inbox, username)
-			idStruct := EGAIdentity{User: username, Token: token, ExpDate: expDate}
 			s.SetFlash("ega", s3conf)
 			ctx.ViewData("infoUrl", auth.Config.InfoURL)
 			ctx.ViewData("infoText", auth.Config.InfoText)
-			err = ctx.View("ega.html", idStruct)
+			ctx.ViewData("User", username)
+			ctx.ViewData("Token", token)
+			ctx.ViewData("ExpDate", expDate)
+
+			err = ctx.View("ega.html")
 			if err != nil {
 				log.Error("Failed to parse response: ", err)
 
@@ -294,7 +301,12 @@ func (auth AuthHandler) getElixirLogin(ctx iris.Context) {
 	s.SetFlash("elixir", oidcData.S3Conf)
 	ctx.ViewData("infoUrl", auth.Config.InfoURL)
 	ctx.ViewData("infoText", auth.Config.InfoText)
-	err := ctx.View("elixir.html", oidcData.ElixirID)
+	ctx.ViewData("User", oidcData.ElixirID.User)
+	ctx.ViewData("Passport", oidcData.ElixirID.Passport)
+	ctx.ViewData("Token", oidcData.ElixirID.Token)
+	ctx.ViewData("ExpDate", oidcData.ElixirID.ExpDate)
+
+	err := ctx.View("elixir.html")
 	if err != nil {
 		log.Error("Failed to view login form: ", err)
 
@@ -353,8 +365,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Initialise OIDC client
-	oauth2Config, provider := getOidcClient(config.Elixir)
+	var oauth2Config oauth2.Config
+	var provider *oidc.Provider
+
+	if config.Elixir.ID != "" && config.Elixir.Secret != "" {
+		// Initialise OIDC client
+		oauth2Config, provider = getOidcClient(config.Elixir)
+	}
 
 	// Create handler struct for the web server
 	authHandler := AuthHandler{
