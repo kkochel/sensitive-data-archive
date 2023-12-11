@@ -50,10 +50,12 @@ if [ -n "$CEGA_CONNECTION" ]; then
 fi
 
 # This is needed for the streams to work properly
+# consumer_timeout added because upload big files is longer than default 30 minutes [1800000]
 cat >/var/lib/rabbitmq/advanced.config<<-EOF
 [
 	{rabbit, [
-		{default_consumer_prefetch, {false,100}}
+		{default_consumer_prefetch, {false,100}},
+		{consumer_timeout, undefined}
 		]
 	}
 ].
