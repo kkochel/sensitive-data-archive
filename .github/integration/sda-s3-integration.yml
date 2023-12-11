@@ -11,7 +11,7 @@ services:
         condition: service_healthy
     environment:
       - PGPASSWORD=rootpasswd
-    image: python:3.10-slim
+    image: python:3.11-slim
     volumes:
       - ./scripts:/scripts
       - shared:/shared
@@ -208,6 +208,49 @@ services:
       - ./sda/config.yaml:/config.yaml
       - shared:/shared
 
+  sync:
+    image: ghcr.io/kkochel/sensitive-data-archive:PR${PR_NUMBER}
+    command: [ sda-sync ]
+    container_name: sync
+    depends_on:
+      credentials:
+        condition: service_completed_successfully
+      minio:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - BROKER_PASSWORD=sync
+      - BROKER_USER=sync
+      - BROKER_QUEUE=mapping_stream
+      - DB_PASSWORD=sync
+      - DB_USER=sync
+    restart: always
+    volumes:
+      - ./sda/config.yaml:/config.yaml
+      - shared:/shared
+
+  sync-api:
+    image: ghcr.io/kkochel/sensitive-data-archive:PR${PR_NUMBER}
+    command: [ sda-syncapi ]
+    container_name: sync-api
+    depends_on:
+      credentials:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - BROKER_PASSWORD=sync
+      - BROKER_USER=sync
+      - BROKER_EXCHANGE=sda.dead
+    ports:
+      - "18080:8080"
+    restart: always
+    volumes:
+      - ./sda/config.yaml:/config.yaml
+
   oidc:
     container_name: oidc
     command:
@@ -225,7 +268,7 @@ services:
       interval: 10s
       timeout: 2s
       retries: 6
-    image: python:3.10-slim
+    image: python:3.11-slim
     ports:
       - "8080:8080"
     restart: always
@@ -250,12 +293,16 @@ services:
         condition: service_started
       s3inbox:
         condition: service_started
+      sync:
+        condition: service_started
+      sync-api:
+        condition: service_started
       verify:
         condition: service_started
     environment:
       - PGPASSWORD=rootpasswd
       - STORAGETYPE=s3
-    image: python:3.10-slim-bullseye
+    image: python:3.11-slim-bullseye
     profiles:
       - tests
     volumes:
