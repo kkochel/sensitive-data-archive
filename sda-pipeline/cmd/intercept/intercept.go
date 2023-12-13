@@ -157,8 +157,6 @@ func main() {
 // schemaNameFromType returns the schema to use for messages of
 // type msgType
 func schemaNameFromType(msgType string) (string, error) {
-	log.Infof("In schemaNameFromType get message type: %v", msgType)
-
 	m := map[string]string{
 		msgAccession: "ingestion-accession",
 		msgCancel:    "ingestion-trigger",
@@ -169,9 +167,7 @@ func schemaNameFromType(msgType string) (string, error) {
 	}
 
 	if m[msgType] != "" {
-		schemaName := m[msgType]
-		log.Infof("In schemaNameFromType get schema name type: %v", schemaName)
-		return schemaName, nil
+		return m[msgType], nil
 	}
 
 	return "", fmt.Errorf("Don't know what schema to use for %s", msgType)
@@ -195,8 +191,6 @@ func typeFromMessage(body []byte) (string, error) {
 	if !ok {
 		return "", errors.New("Could not cast type attribute to string")
 	}
-
-	log.Infof("Func typeFromMessage return message type: %v", msgType)
 
 	return msgType, nil
 }
