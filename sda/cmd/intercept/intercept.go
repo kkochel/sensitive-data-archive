@@ -56,6 +56,7 @@ func main() {
 		}
 		for delivered := range messages {
 			log.Debugf("Received a message: %s", delivered.Body)
+			log.Info("Sensitive Data Archive - isolated interceptor")
 
 			msgType, err := typeFromMessage(delivered.Body)
 			if err != nil {
